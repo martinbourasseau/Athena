@@ -29,14 +29,18 @@ export const site = {
   },
 
   contact: {
-    /** Adresse professionnelle réelle — `null` tant qu'elle n'est pas confirmée. */
+    /**
+     * Adresse professionnelle réelle — `null` tant qu'elle n'est pas confirmée.
+     * Proposée par le propriétaire, NON activée : orthographe à vérifier
+     * (« bourrasseau4 » proposé vs « bourasseau4 » utilisé ailleurs).
+     */
     email: null as string | null,
   },
 
   /** Lien vers la maison mère. `url` à `null` → signature sans lien. */
   group: {
     name: "Groupe BOURASSEAU",
-    url: null as string | null,
+    url: "https://groupe-bourrasso.vercel.app" as string | null,
   },
 
   /** Plateforme indépendante, présentée comme complémentaire. */
