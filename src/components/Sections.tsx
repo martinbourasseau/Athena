@@ -1,5 +1,7 @@
 import { Loom } from "./Loom";
 import { Weave } from "./Weave";
+import { Woven } from "./Woven";
+import type { CSSProperties } from "react";
 import { scenarios } from "@/content/scenarios";
 import { realisations } from "@/content/realisations";
 import { site } from "@/content/site";
@@ -10,17 +12,19 @@ export function Hero() {
       <div className="hero-warp" aria-hidden="true" />
       <div className="wrap hero-grid">
         <div className="hero-copy">
-          <p className="eyebrow mono">Agents IA sur mesure · {site.location.city}</p>
-          <h1 id="hero-title" className="hero-title">
-            L&apos;intelligence,
-            <br />
-            <em>mise à l&apos;ouvrage.</em>
-          </h1>
-          <p className="hero-lead">
+          <p className="eyebrow mono hero-in">Agents IA sur mesure · {site.location.city}</p>
+          <Woven
+            as="h1"
+            id="hero-title"
+            className="hero-title"
+            intro
+            parts={["L’intelligence,", { br: true }, { em: "mise à l’ouvrage." }]}
+          />
+          <p className="hero-lead hero-in" style={{ "--d": "520ms" } as CSSProperties}>
             Nous concevons, développons et personnalisons des agents IA qui exécutent de vraies tâches dans votre
             entreprise. Ils partent de vos outils et de vos règles, et s&apos;arrêtent là où vous voulez garder la main.
           </p>
-          <div className="hero-actions">
+          <div className="hero-actions hero-in" style={{ "--d": "640ms" } as CSSProperties}>
             <a href="#contact" className="button">
               Parler de votre projet
             </a>
@@ -29,7 +33,9 @@ export function Hero() {
             </a>
           </div>
         </div>
-        <Loom />
+        <div className="hero-in hero-in--loom" style={{ "--d": "260ms" } as CSSProperties}>
+          <Loom />
+        </div>
       </div>
     </section>
   );
@@ -60,12 +66,10 @@ export function Pillars() {
         <p className="eyebrow mono" data-reveal>
           Le principe
         </p>
-        <h2 id="pillars-title" className="section-title" data-reveal>
-          Vos tâches sont les fils. <em>L&apos;agent tisse.</em>
-        </h2>
+        <Woven id="pillars-title" className="section-title" parts={["Vos tâches sont les fils. ", { em: "L’agent tisse." }]} />
         <div className="pillars-grid">
           {pillars.map((p, i) => (
-            <article key={p.title} className="pillar" data-reveal style={{ transitionDelay: `${i * 90}ms` }}>
+            <article key={p.title} className="pillar" data-reveal style={{ "--d": `${i * 110}ms` } as CSSProperties}>
               <PillarGlyph index={i} />
               <p className="mono pillar-word">{p.word}</p>
               <h3>{p.title}</h3>
@@ -82,13 +86,13 @@ function PillarGlyph({ index }: { index: number }) {
   return (
     <svg viewBox="0 0 120 56" className="pillar-glyph" aria-hidden="true" focusable="false">
       {Array.from({ length: 9 }, (_, c) => (
-        <line key={c} x1={8 + c * 13} x2={8 + c * 13} y1={4} y2={52} className="glyph-warp" />
+        <line key={c} x1={8 + c * 13} x2={8 + c * 13} y1={4} y2={52} className="glyph-warp" pathLength={1} style={{ "--c": c } as CSSProperties} />
       ))}
-      {index >= 1 ? <path d="M0 28 H120" className="glyph-weft" /> : null}
+      {index === 1 ? <path d="M0 28 H120" className="glyph-weft" pathLength={1} /> : null}
       {index === 1 ? <rect x="66" y="22" width="26" height="12" rx="6" className="glyph-shuttle" /> : null}
       {index === 2 ? (
         <>
-          <path d="M0 28 H48 C 54 28, 54 18, 60 18 C 66 18, 66 28, 72 28 H120" className="glyph-weft" />
+          <path d="M0 28 H48 C 54 28, 54 18, 60 18 C 66 18, 66 28, 72 28 H120" className="glyph-weft" pathLength={1} />
           <circle cx="60" cy="28" r="4" className="glyph-knot" />
         </>
       ) : null}
@@ -100,17 +104,19 @@ export function Services() {
   return (
     <section id="services" className="section services" aria-labelledby="services-title">
       <div className="wrap services-grid">
+        {/* Colonne dédiée : l'introduction reste collante dans sa seule rangée,
+            sans glisser sur le tableau « sait faire / ne fait pas ». */}
+        <div className="services-intro-col">
         <div className="services-intro">
           <p className="eyebrow mono" data-reveal>
             Services
           </p>
-          <h2 id="services-title" className="section-title" data-reveal>
-            Un agent pensé pour <em>votre</em> travail.
-          </h2>
+          <Woven id="services-title" className="section-title" parts={["Un agent pensé pour ", { em: "votre" }, " travail."]} />
           <p className="section-lead" data-reveal>
             Chaque agent est construit pour une tâche précise, dans votre contexte. Nous l&apos;accompagnons de la
             première idée jusqu&apos;à son usage au quotidien.
           </p>
+        </div>
         </div>
         <ol className="services-list">
           <li data-reveal>
@@ -178,9 +184,11 @@ export function Scenarios() {
             <p className="eyebrow mono" data-reveal>
               Scénarios illustratifs
             </p>
-            <h2 id="scenarios-title" className="section-title" data-reveal>
-              Ce qu&apos;un agent <em>pourrait</em> prendre en charge.
-            </h2>
+            <Woven
+              id="scenarios-title"
+              className="section-title"
+              parts={["Ce qu’un agent ", { em: "pourrait" }, " prendre en charge."]}
+            />
           </div>
           <p className="notice" data-reveal>
             Les exemples ci-dessous sont des cas d&apos;usage possibles. Ce ne sont ni des clients, ni des projets
@@ -188,8 +196,8 @@ export function Scenarios() {
           </p>
         </div>
         <div className="scenarios-grid">
-          {scenarios.map((s) => (
-            <article key={s.id} className="scenario" data-reveal>
+          {scenarios.map((s, i) => (
+            <article key={s.id} className="scenario" data-reveal style={{ "--d": `${(i % 3) * 90}ms` } as CSSProperties}>
               <Weave seed={s.id + s.steps.join()} className="scenario-weave" rows={6} cols={34} />
               <p className="tag mono">Scénario illustratif</p>
               <h3>{s.title}</h3>
@@ -218,9 +226,7 @@ export function Realisations() {
         <p className="eyebrow mono" data-reveal>
           Réalisations
         </p>
-        <h2 id="realisations-title" className="section-title" data-reveal>
-          Sur le métier.
-        </h2>
+        <Woven id="realisations-title" className="section-title" parts={["Sur le métier."]} />
         {hasItems ? (
           <div className="realisations-grid">
             {realisations.map((r) => (
@@ -279,15 +285,13 @@ export function Method() {
         <p className="eyebrow mono" data-reveal>
           Méthode
         </p>
-        <h2 id="method-title" className="section-title" data-reveal>
-          Quatre rangées, <em>une carte perforée.</em>
-        </h2>
+        <Woven id="method-title" className="section-title" parts={["Quatre rangées, ", { em: "une carte perforée." }]} />
         <ol className="punchcard">
           {phases.map((p, i) => (
-            <li key={p.name} className="punch-row" data-reveal style={{ transitionDelay: `${i * 80}ms` }}>
+            <li key={p.name} className="punch-row" data-reveal style={{ "--d": `${i * 90}ms` } as CSSProperties}>
               <span className="punch-holes" aria-hidden="true">
                 {Array.from({ length: 4 }, (_, h) => (
-                  <span key={h} className={h <= i ? "hole is-punched" : "hole"} />
+                  <span key={h} className={h <= i ? "hole is-punched" : "hole"} style={{ "--h": h } as CSSProperties} />
                 ))}
               </span>
               <span className="mono punch-index">{String(i + 1).padStart(2, "0")}</span>
@@ -308,9 +312,7 @@ export function Trust() {
         <p className="eyebrow mono" data-reveal>
           Confiance et données
         </p>
-        <h2 id="trust-title" className="section-title" data-reveal>
-          Voir clair, <em>même dans le noir.</em>
-        </h2>
+        <Woven id="trust-title" className="section-title" parts={["Voir clair, ", { em: "même dans le noir." }]} />
         <div className="trust-grid">
           <article data-reveal>
             <h3>Vous gardez la main</h3>

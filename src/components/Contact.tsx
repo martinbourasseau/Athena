@@ -1,6 +1,7 @@
 import { site } from "@/content/site";
 import { bookingUrl, isFormConfigured } from "@/lib/env";
 import { QualificationForm } from "./QualificationForm";
+import { Woven } from "./Woven";
 
 /**
  * Trois parcours : formulaire de qualification (principal), email et
@@ -19,9 +20,7 @@ export function Contact() {
           <p className="eyebrow mono" data-reveal>
             Contact
           </p>
-          <h2 id="contact-title" className="section-title" data-reveal>
-            Parlons de <em>votre</em> agent.
-          </h2>
+          <Woven id="contact-title" className="section-title" parts={["Parlons de ", { em: "votre" }, " agent."]} />
           <p className="section-lead" data-reveal>
             Décrivez la tâche que vous aimeriez confier à un agent. Quelques lignes suffisent pour démarrer
             l&apos;échange.

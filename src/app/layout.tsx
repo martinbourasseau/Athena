@@ -1,9 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
-import "@fontsource-variable/newsreader/opsz.css";
-import "@fontsource-variable/newsreader/opsz-italic.css";
 import "./globals.css";
+import { newsreader } from "./fonts";
 import { site } from "@/content/site";
 import { isIndexable, siteUrl } from "@/lib/env";
 import { Header } from "@/components/Header";
@@ -32,15 +31,30 @@ export const viewport: Viewport = {
   themeColor: "#F2EEE5",
 };
 
+/**
+ * Pose la classe `js` avant le premier affichage : les éléments animés
+ * peuvent ainsi partir de leur état initial sans clignoter. Filet de
+ * sécurité : si le moteur ne démarre pas en 3 s, la classe est retirée
+ * et tout le contenu s'affiche normalement.
+ */
+const boot = `(function(r){r.classList.add('js');setTimeout(function(){if(!r.classList.contains('motion-ready'))r.classList.remove('js')},3000)})(document.documentElement)`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+    <html
+      lang="fr"
+      className={`${GeistSans.variable} ${GeistMono.variable} ${newsreader.variable}`}
+      suppressHydrationWarning
+    >
       <body>
+        <script dangerouslySetInnerHTML={{ __html: boot }} />
         <a className="skip-link" href="#contenu">
           Aller au contenu
         </a>
         <Header />
-        <main id="contenu">{children}</main>
+        <main id="contenu" tabIndex={-1}>
+          {children}
+        </main>
         <Footer />
         <Motion />
       </body>
