@@ -18,9 +18,9 @@ const rows: { label: string; value: string | null }[] = [
 export default function MentionsLegales() {
   const complete = rows.every((r) => r.value);
   return (
-    <section className="section legal">
+    <section className="section legal" data-scene="5">
       <div className="wrap legal-inner">
-        <p className="eyebrow mono">Informations</p>
+        <p className="section-label">Informations</p>
         <h1 className="section-title">Mentions légales</h1>
         {!complete ? (
           <p className="notice">Certaines informations légales sont en cours de complétion.</p>
@@ -30,7 +30,7 @@ export default function MentionsLegales() {
             .filter((r) => r.value)
             .map((r) => (
               <div key={r.label}>
-                <dt className="mono">{r.label}</dt>
+                <dt>{r.label}</dt>
                 <dd>{r.value}</dd>
               </div>
             ))}

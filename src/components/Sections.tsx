@@ -1,45 +1,52 @@
-import { Loom } from "./Loom";
-import { Weave } from "./Weave";
-import { Woven } from "./Woven";
 import type { CSSProperties } from "react";
-import { scenarios } from "@/content/scenarios";
+import { Kinetic, Decode } from "./Kinetic";
+import { Orchestration } from "./Orchestration";
 import { realisations } from "@/content/realisations";
 import { site } from "@/content/site";
 
+/* Chaque section porte `data-scene` : la forme que prend l'univers derrière elle.
+   0 nœud · 1 chaîne · 2 tissu · 3 réseau · 4 hélice · 5 noyau */
+
 export function Hero() {
   return (
-    <section className="hero" aria-labelledby="hero-title">
-      <div className="hero-warp" aria-hidden="true" />
-      <div className="wrap hero-grid">
-        <div className="hero-copy">
-          <p className="eyebrow mono hero-in">Agents IA sur mesure · {site.location.city}</p>
-          <Woven
-            as="h1"
-            id="hero-title"
-            className="hero-title"
-            intro
-            parts={["L’intelligence,", { br: true }, { em: "mise à l’ouvrage." }]}
-          />
-          <p className="hero-lead hero-in" style={{ "--d": "520ms" } as CSSProperties}>
-            Nous concevons, développons et personnalisons des agents IA qui exécutent de vraies tâches dans votre
-            entreprise. Ils partent de vos outils et de vos règles, et s&apos;arrêtent là où vous voulez garder la main.
-          </p>
-          <div className="hero-actions hero-in" style={{ "--d": "640ms" } as CSSProperties}>
-            <a href="#contact" className="button">
-              Parler de votre projet
-            </a>
-            <a href="#scenarios" className="button button--ghost">
-              Voir des scénarios
-            </a>
-          </div>
-        </div>
-        <div className="hero-in hero-in--loom" style={{ "--d": "260ms" } as CSSProperties}>
-          <Loom />
+    <section className="hero" data-scene="0" aria-labelledby="hero-title">
+      <div className="wrap hero-inner">
+        <p className="hero-kicker" data-reveal="fade">
+          <Decode text={`Agents IA sur mesure · ${site.location.city}`} />
+        </p>
+        <Kinetic
+          as="h1"
+          id="hero-title"
+          className="hero-title"
+          intro
+          parts={["L’intelligence,", { br: true }, { tense: "mise à l’ouvrage." }]}
+        />
+        <p className="hero-lead hero-in" style={{ "--d": "700ms" } as CSSProperties}>
+          Nous concevons, développons et personnalisons des agents IA qui exécutent de vraies tâches dans votre
+          entreprise. Ils partent de vos outils et de vos règles, et s&apos;arrêtent là où vous voulez garder la main.
+        </p>
+        <div className="hero-actions hero-in" style={{ "--d": "820ms" } as CSSProperties}>
+          <a href="#contact" className="button">
+            Parler de votre projet
+          </a>
+          <a href="#scenarios" className="button button--ghost">
+            Voir des scénarios
+          </a>
         </div>
       </div>
+      <p className="hero-legend hero-in" style={{ "--d": "1100ms" } as CSSProperties}>
+        <span className="hero-legend-line" aria-hidden="true" />
+        Un nœud de fils lumineux : vos outils, vos données et vos règles, reliés par un agent.
+      </p>
+      <a className="scroll-cue hero-in" href="#principe" style={{ "--d": "1300ms" } as CSSProperties}>
+        <span className="sr-only">Aller au principe</span>
+        <span className="scroll-cue-line" aria-hidden="true" />
+      </a>
     </section>
   );
 }
+
+const manifesto = "Vos tâches sont les fils. L’agent tisse.".split(" ");
 
 const pillars = [
   {
@@ -61,17 +68,25 @@ const pillars = [
 
 export function Pillars() {
   return (
-    <section className="section pillars" aria-labelledby="pillars-title">
+    <section id="principe" className="section principle" data-scene="1" aria-labelledby="pillars-title">
+      <div className="principle-sticky" data-progress>
+        <div className="wrap">
+          <p className="section-label">Le principe</p>
+          <h2 id="pillars-title" className="manifesto" style={{ "--n": manifesto.length } as CSSProperties}>
+            {manifesto.map((w, i) => (
+              <span key={i} className={i >= 5 ? "tense" : undefined} style={{ "--i": i } as CSSProperties}>
+                {w}{" "}
+              </span>
+            ))}
+          </h2>
+        </div>
+      </div>
       <div className="wrap">
-        <p className="eyebrow mono" data-reveal>
-          Le principe
-        </p>
-        <Woven id="pillars-title" className="section-title" parts={["Vos tâches sont les fils. ", { em: "L’agent tisse." }]} />
-        <div className="pillars-grid">
+        <div className="pillars">
           {pillars.map((p, i) => (
-            <article key={p.title} className="pillar" data-reveal style={{ "--d": `${i * 110}ms` } as CSSProperties}>
+            <article key={p.title} className="pillar" data-reveal style={{ "--d": `${i * 120}ms` } as CSSProperties}>
               <PillarGlyph index={i} />
-              <p className="mono pillar-word">{p.word}</p>
+              <p className="pillar-word">{p.word}</p>
               <h3>{p.title}</h3>
               <p>{p.body}</p>
             </article>
@@ -86,10 +101,19 @@ function PillarGlyph({ index }: { index: number }) {
   return (
     <svg viewBox="0 0 120 56" className="pillar-glyph" aria-hidden="true" focusable="false">
       {Array.from({ length: 9 }, (_, c) => (
-        <line key={c} x1={8 + c * 13} x2={8 + c * 13} y1={4} y2={52} className="glyph-warp" pathLength={1} style={{ "--c": c } as CSSProperties} />
+        <line
+          key={c}
+          x1={8 + c * 13}
+          x2={8 + c * 13}
+          y1={4}
+          y2={52}
+          className="glyph-warp"
+          pathLength={1}
+          style={{ "--c": c } as CSSProperties}
+        />
       ))}
       {index === 1 ? <path d="M0 28 H120" className="glyph-weft" pathLength={1} /> : null}
-      {index === 1 ? <rect x="66" y="22" width="26" height="12" rx="6" className="glyph-shuttle" /> : null}
+      {index === 1 ? <rect x="66" y="23" width="26" height="10" rx="5" className="glyph-shuttle" /> : null}
       {index === 2 ? (
         <>
           <path d="M0 28 H48 C 54 28, 54 18, 60 18 C 66 18, 66 28, 72 28 H120" className="glyph-weft" pathLength={1} />
@@ -100,59 +124,49 @@ function PillarGlyph({ index }: { index: number }) {
   );
 }
 
+const services = [
+  {
+    name: "Concevoir",
+    body: "Nous identifions avec vous la tâche à confier, les informations dont l'agent a besoin, ses limites et les moments où il doit vous solliciter.",
+  },
+  {
+    name: "Développer",
+    body: "Nous construisons l'agent et le relions aux outils nécessaires, puis nous le testons sur des cas réels avant tout usage courant.",
+  },
+  {
+    name: "Personnaliser",
+    body: "Nous ajustons son ton, ses règles et son périmètre à votre activité, et nous le faisons évoluer avec vos retours.",
+  },
+];
+
 export function Services() {
   return (
-    <section id="services" className="section services" aria-labelledby="services-title">
+    <section id="services" className="section services" data-scene="2" aria-labelledby="services-title">
       <div className="wrap services-grid">
-        {/* Colonne dédiée : l'introduction reste collante dans sa seule rangée,
-            sans glisser sur le tableau « sait faire / ne fait pas ». */}
-        <div className="services-intro-col">
         <div className="services-intro">
-          <p className="eyebrow mono" data-reveal>
-            Services
-          </p>
-          <Woven id="services-title" className="section-title" parts={["Un agent pensé pour ", { em: "votre" }, " travail."]} />
+          <p className="section-label">Services</p>
+          <Kinetic id="services-title" className="section-title" parts={["Un agent pensé ", { tense: "pour votre travail." }]} />
           <p className="section-lead" data-reveal>
             Chaque agent est construit pour une tâche précise, dans votre contexte. Nous l&apos;accompagnons de la
             première idée jusqu&apos;à son usage au quotidien.
           </p>
         </div>
-        </div>
         <ol className="services-list">
-          <li data-reveal>
-            <span className="mono services-num">01</span>
-            <div>
-              <h3>Concevoir</h3>
-              <p>
-                Nous identifions avec vous la tâche à confier, les informations dont l&apos;agent a besoin, ses
-                limites et les moments où il doit vous solliciter.
-              </p>
-            </div>
-          </li>
-          <li data-reveal>
-            <span className="mono services-num">02</span>
-            <div>
-              <h3>Développer</h3>
-              <p>
-                Nous construisons l&apos;agent et le relions aux outils nécessaires, puis nous le testons sur des
-                cas réels avant tout usage courant.
-              </p>
-            </div>
-          </li>
-          <li data-reveal>
-            <span className="mono services-num">03</span>
-            <div>
-              <h3>Personnaliser</h3>
-              <p>
-                Nous ajustons son ton, ses règles et son périmètre à votre activité, et nous le faisons évoluer avec
-                vos retours.
-              </p>
-            </div>
-          </li>
+          {services.map((sv, i) => (
+            <li key={sv.name} data-reveal data-spot style={{ "--d": `${i * 100}ms` } as CSSProperties}>
+              <span className="services-num" aria-hidden="true">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <h3>{sv.name}</h3>
+              <p>{sv.body}</p>
+            </li>
+          ))}
         </ol>
+      </div>
+      <div className="wrap">
         <div className="can-cannot" data-reveal>
           <div>
-            <p className="mono can-label">Ce qu&apos;un agent sait faire</p>
+            <h3 className="can-label">Ce qu&apos;un agent sait faire</h3>
             <ul>
               <li>Lire, trier et résumer des informations</li>
               <li>Rédiger des brouillons dans votre ton</li>
@@ -161,7 +175,7 @@ export function Services() {
             </ul>
           </div>
           <div>
-            <p className="mono can-label can-label--no">Ce qu&apos;il ne fait pas</p>
+            <h3 className="can-label can-label--no">Ce qu&apos;il ne fait pas</h3>
             <ul>
               <li>Décider seul de ce qui engage votre entreprise</li>
               <li>Accéder à ce que vous n&apos;avez pas autorisé</li>
@@ -177,17 +191,15 @@ export function Services() {
 
 export function Scenarios() {
   return (
-    <section id="scenarios" className="section scenarios" aria-labelledby="scenarios-title">
+    <section id="scenarios" className="section scenarios" data-scene="3" aria-labelledby="scenarios-title">
       <div className="wrap">
         <div className="scenarios-head">
           <div>
-            <p className="eyebrow mono" data-reveal>
-              Scénarios illustratifs
-            </p>
-            <Woven
+            <p className="section-label">Scénarios illustratifs</p>
+            <Kinetic
               id="scenarios-title"
               className="section-title"
-              parts={["Ce qu’un agent ", { em: "pourrait" }, " prendre en charge."]}
+              parts={["Ce qu’un agent pourrait ", { tense: "prendre en charge." }]}
             />
           </div>
           <p className="notice" data-reveal>
@@ -195,23 +207,8 @@ export function Scenarios() {
             réalisés, ni des résultats mesurés.
           </p>
         </div>
-        <div className="scenarios-grid">
-          {scenarios.map((s, i) => (
-            <article key={s.id} className="scenario" data-reveal style={{ "--d": `${(i % 3) * 90}ms` } as CSSProperties}>
-              <Weave seed={s.id + s.steps.join()} className="scenario-weave" rows={6} cols={34} />
-              <p className="tag mono">Scénario illustratif</p>
-              <h3>{s.title}</h3>
-              <p className="scenario-situation">{s.situation}</p>
-              <ol className="scenario-steps mono">
-                {s.steps.map((step) => (
-                  <li key={step}>{step}</li>
-                ))}
-              </ol>
-              <p className="scenario-check">
-                <span className="mono">Nœud</span> {s.checkpoint}
-              </p>
-            </article>
-          ))}
+        <div data-reveal>
+          <Orchestration />
         </div>
       </div>
     </section>
@@ -221,18 +218,15 @@ export function Scenarios() {
 export function Realisations() {
   const hasItems = realisations.length > 0;
   return (
-    <section id="realisations" className="section realisations" aria-labelledby="realisations-title">
-      <div className="wrap">
-        <p className="eyebrow mono" data-reveal>
-          Réalisations
-        </p>
-        <Woven id="realisations-title" className="section-title" parts={["Sur le métier."]} />
+    <section id="realisations" className="section realisations" data-scene="3" aria-labelledby="realisations-title">
+      <div className="wrap realisations-inner">
+        <p className="section-label">Réalisations</p>
+        <Kinetic id="realisations-title" className="section-title" parts={["Sur le ", { tense: "métier." }]} />
         {hasItems ? (
           <div className="realisations-grid">
             {realisations.map((r) => (
               <article key={r.title} className="realisation" data-reveal>
-                <Weave seed={r.title} className="realisation-weave" rows={8} cols={30} />
-                {r.client ? <p className="mono tag">{r.client}</p> : null}
+                {r.client ? <p className="orch-tag">{r.client}</p> : null}
                 <h3>{r.title}</h3>
                 <p>{r.context}</p>
                 <p>{r.whatTheAgentDoes}</p>
@@ -246,13 +240,10 @@ export function Realisations() {
             ))}
           </div>
         ) : (
-          <div className="realisations-empty" data-reveal>
-            <Weave seed="realisations-a-venir" className="empty-weave" rows={9} cols={48} accentRows={2} />
-            <p>
-              Les réalisations détaillées seront présentées ici dès qu&apos;elles pourront être documentées et
-              validées avec les personnes concernées.
-            </p>
-          </div>
+          <p className="realisations-empty" data-reveal>
+            Les réalisations détaillées seront présentées ici dès qu&apos;elles pourront être documentées et validées
+            avec les personnes concernées.
+          </p>
         )}
       </div>
     </section>
@@ -280,26 +271,29 @@ const phases = [
 
 export function Method() {
   return (
-    <section id="methode" className="section method" aria-labelledby="method-title">
-      <div className="wrap">
-        <p className="eyebrow mono" data-reveal>
-          Méthode
-        </p>
-        <Woven id="method-title" className="section-title" parts={["Quatre rangées, ", { em: "une carte perforée." }]} />
-        <ol className="punchcard">
+    <section id="methode" className="section method" data-scene="4" aria-labelledby="method-title">
+      <div className="wrap method-grid">
+        <div className="method-intro">
+          <p className="section-label">Méthode</p>
+          <Kinetic id="method-title" className="section-title" parts={["Quatre étapes, ", { tense: "un seul fil." }]} />
+        </div>
+        <div className="timeline" data-progress>
+          <span className="timeline-rail" aria-hidden="true">
+            <span className="timeline-fill" />
+          </span>
+          <ol className="timeline-list">
           {phases.map((p, i) => (
-            <li key={p.name} className="punch-row" data-reveal style={{ "--d": `${i * 90}ms` } as CSSProperties}>
-              <span className="punch-holes" aria-hidden="true">
-                {Array.from({ length: 4 }, (_, h) => (
-                  <span key={h} className={h <= i ? "hole is-punched" : "hole"} style={{ "--h": h } as CSSProperties} />
-                ))}
+            <li key={p.name} className="timeline-step" data-lit-at={(0.08 + i * 0.22).toFixed(2)}>
+              <span className="timeline-dot" aria-hidden="true" />
+              <span className="timeline-n" aria-hidden="true">
+                {String(i + 1).padStart(2, "0")}
               </span>
-              <span className="mono punch-index">{String(i + 1).padStart(2, "0")}</span>
               <h3>{p.name}</h3>
               <p>{p.body}</p>
             </li>
           ))}
-        </ol>
+          </ol>
+        </div>
       </div>
     </section>
   );
@@ -307,12 +301,10 @@ export function Method() {
 
 export function Trust() {
   return (
-    <section id="confiance" className="section trust" aria-labelledby="trust-title">
+    <section id="confiance" className="section trust" data-scene="4" aria-labelledby="trust-title">
       <div className="wrap">
-        <p className="eyebrow mono" data-reveal>
-          Confiance et données
-        </p>
-        <Woven id="trust-title" className="section-title" parts={["Voir clair, ", { em: "même dans le noir." }]} />
+        <p className="section-label">Confiance et données</p>
+        <Kinetic id="trust-title" className="section-title" parts={["Voir clair, ", { tense: "même dans le noir." }]} />
         <div className="trust-grid">
           <article data-reveal>
             <h3>Vous gardez la main</h3>
@@ -321,14 +313,14 @@ export function Trust() {
               humaine.
             </p>
           </article>
-          <article data-reveal>
+          <article data-reveal style={{ "--d": "100ms" } as CSSProperties}>
             <h3>Des accès limités</h3>
             <p>
               Nous recensons ensemble les données dont l&apos;agent a besoin, et seulement celles-là. Le traitement
               des données personnelles est cadré dès le diagnostic.
             </p>
           </article>
-          <article data-reveal>
+          <article data-reveal style={{ "--d": "200ms" } as CSSProperties}>
             <h3>Des limites assumées</h3>
             <p>
               Une IA peut se tromper. Chaque agent est conçu pour être vérifiable : il cite ses sources, signale ses
@@ -343,10 +335,10 @@ export function Trust() {
 
 export function Synatrap() {
   return (
-    <section id="synatrap" className="section synatrap" aria-labelledby="synatrap-title">
+    <section id="synatrap" className="section synatrap" data-scene="5" aria-labelledby="synatrap-title">
       <div className="wrap synatrap-inner" data-reveal>
         <div>
-          <p className="eyebrow mono">Plateforme complémentaire</p>
+          <p className="section-label">Plateforme complémentaire</p>
           <h2 id="synatrap-title" className="synatrap-title">
             {site.synatrap.name}
           </h2>

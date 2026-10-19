@@ -2,12 +2,13 @@ import type { Metadata, Viewport } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
-import { newsreader } from "./fonts";
+import { anybody } from "./fonts";
 import { site } from "@/content/site";
 import { isIndexable, siteUrl } from "@/lib/env";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Motion } from "@/components/Motion";
+import { Universe } from "@/components/Universe";
 
 const title = `${site.name} — Agents IA sur mesure pour les entreprises · Nantes`;
 
@@ -28,7 +29,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#F2EEE5",
+  themeColor: "#04080B",
+  colorScheme: "dark",
 };
 
 /**
@@ -43,11 +45,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="fr"
-      className={`${GeistSans.variable} ${GeistMono.variable} ${newsreader.variable}`}
+      className={`${GeistSans.variable} ${GeistMono.variable} ${anybody.variable}`}
       suppressHydrationWarning
     >
       <body>
         <script dangerouslySetInnerHTML={{ __html: boot }} />
+        <Universe />
         <a className="skip-link" href="#contenu">
           Aller au contenu
         </a>

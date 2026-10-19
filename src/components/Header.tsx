@@ -16,7 +16,7 @@ export function Header() {
         <Link href="/" className="brand" aria-label={`${site.name}, accueil`}>
           <Mark className="brand-mark" />
           <span className="brand-name">{site.name}</span>
-          <span className="brand-sub mono">{site.tagline}</span>
+          <span className="brand-sub">{site.tagline}</span>
         </Link>
         <nav aria-label="Navigation principale" className="nav">
           {nav.map((n) => (

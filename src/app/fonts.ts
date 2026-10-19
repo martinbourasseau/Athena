@@ -1,26 +1,23 @@
 import localFont from "next/font/local";
 
 /**
- * Newsreader (OFL), auto-hébergée via next/font : fichiers préchargés et
- * police de secours aux métriques ajustées, pour que les titres ne
- * « sautent » pas au moment où la police se charge.
- * Les fichiers proviennent du paquet @fontsource-variable/newsreader.
+ * Anybody (OFL) : police variable, graisse 100–900 et largeur 50–150 %.
+ * La largeur porte le système des titres : large et léger pour l'idée,
+ * condensé et dense quand « le fil se tend ».
+ * Auto-hébergée via next/font : préchargée, police de secours ajustée
+ * pour éviter tout saut de mise en page.
  */
-export const newsreader = localFont({
+export const anybody = localFont({
   src: [
     {
-      path: "../../node_modules/@fontsource-variable/newsreader/files/newsreader-latin-opsz-normal.woff2",
+      path: "../../node_modules/@fontsource-variable/anybody/files/anybody-latin-standard-normal.woff2",
       style: "normal",
-      weight: "200 800",
-    },
-    {
-      path: "../../node_modules/@fontsource-variable/newsreader/files/newsreader-latin-opsz-italic.woff2",
-      style: "italic",
-      weight: "200 800",
+      weight: "100 900",
     },
   ],
-  variable: "--font-newsreader",
+  variable: "--font-anybody",
   display: "swap",
-  adjustFontFallback: "Times New Roman",
-  fallback: ["Iowan Old Style", "Georgia", "serif"],
+  adjustFontFallback: "Arial",
+  fallback: ["Arial Narrow", "Arial", "sans-serif"],
+  declarations: [{ prop: "font-stretch", value: "50% 150%" }],
 });

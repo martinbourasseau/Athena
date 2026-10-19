@@ -58,7 +58,7 @@ export function QualificationForm({ enabled }: { enabled: boolean }) {
 
   return (
     <form className="form-card" onSubmit={onSubmit} noValidate={false} aria-describedby="form-state">
-      <p className="mono form-kicker">Décrire mon projet</p>
+      <p className="form-kicker">Décrire mon projet</p>
 
       {!enabled ? (
         <p id="form-state" className="form-disabled" role="note">

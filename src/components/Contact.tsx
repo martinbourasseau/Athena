@@ -1,7 +1,7 @@
 import { site } from "@/content/site";
 import { bookingUrl, isFormConfigured } from "@/lib/env";
 import { QualificationForm } from "./QualificationForm";
-import { Woven } from "./Woven";
+import { Kinetic } from "./Kinetic";
 
 /**
  * Trois parcours : formulaire de qualification (principal), email et
@@ -14,20 +14,18 @@ export function Contact() {
   const email = site.contact.email;
 
   return (
-    <section id="contact" className="section contact" aria-labelledby="contact-title">
+    <section id="contact" className="section contact" data-scene="5" aria-labelledby="contact-title">
       <div className="wrap contact-grid">
         <div className="contact-intro">
-          <p className="eyebrow mono" data-reveal>
-            Contact
-          </p>
-          <Woven id="contact-title" className="section-title" parts={["Parlons de ", { em: "votre" }, " agent."]} />
+          <p className="section-label">Contact</p>
+          <Kinetic id="contact-title" className="section-title" parts={["Parlons de ", { tense: "votre agent." }]} />
           <p className="section-lead" data-reveal>
             Décrivez la tâche que vous aimeriez confier à un agent. Quelques lignes suffisent pour démarrer
             l&apos;échange.
           </p>
 
           <div className="contact-alts" data-reveal>
-            <p className="mono contact-alts-label">Ou, si vous préférez</p>
+            <p className="contact-alts-label">Ou, si vous préférez</p>
 
             <div className={`alt ${email ? "" : "is-pending"}`}>
               <p className="alt-title">Écrire directement</p>

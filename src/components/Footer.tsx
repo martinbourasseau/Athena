@@ -28,7 +28,7 @@ export function Footer() {
           </a>
           <Link href="/mentions-legales">Mentions légales</Link>
         </nav>
-        <p className="footer-loc mono">{site.location.label}</p>
+        <p className="footer-loc">{site.location.label}</p>
       </div>
     </footer>
   );
