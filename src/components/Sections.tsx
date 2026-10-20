@@ -31,7 +31,7 @@ export function Hero() {
           rédigent, organisent et agissent dans vos outils, selon vos objectifs et vos règles.
         </p>
         <div className="hero-actions hero-in" style={{ "--d": "820ms" } as CSSProperties}>
-          <a href="#contact" className="button">
+          <a href="#projet" className="button">
             Décrire mon projet
           </a>
           <a href="#capacites" className="button button--ghost">
