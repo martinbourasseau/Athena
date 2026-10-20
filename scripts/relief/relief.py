@@ -86,3 +86,9 @@ small = lambda a: cv2.resize(a.astype(np.float32), (256, 384), interpolation=cv2
 rgba = np.dstack([small(shade), small(depth), small(edge), small(mask * fade)])
 Image.fromarray((np.clip(rgba, 0, 1) * 255 + 0.5).astype(np.uint8), 'RGBA').save(
     'athena-relief.webp', quality=88, method=6)
+
+# Le site sert la carte en six fragments (public/relief/0.bin … 5.bin).
+data = open('athena-relief.webp', 'rb').read()
+size = -(-len(data) // 6)
+for i in range(6):
+    open(f'{i}.bin', 'wb').write(data[i * size:(i + 1) * size])

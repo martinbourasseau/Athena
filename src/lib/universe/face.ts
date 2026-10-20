@@ -1,8 +1,8 @@
 /**
  * Données du visage d'Athéna pour l'univers WebGL.
  *
- * La sculpture est décrite par une petite carte (256 × 384, WebP, ~25 Ko)
- * produite hors ligne à partir de l'image de référence
+ * La sculpture est décrite par une petite carte (256 × 384, WebP, ~25 Ko,
+ * servie en six fragments dans `public/relief/`) produite hors ligne à partir de l'image de référence
  * (`scripts/relief/relief.py`) :
  * - R : ombrage de la sculpture (clair = surface éclairée) ;
  * - G : profondeur reconstruite (relief 2,5D, 1 = au plus près) ;
@@ -21,7 +21,8 @@ export type FaceData = {
   aux: Float32Array;
 };
 
-const MAP_URL = "/athena-relief.webp";
+/** La carte WebP est servie en six fragments, réassemblés ici. */
+const MAP_PARTS = 6;
 
 function rng(seed: number) {
   return () => {
@@ -34,9 +35,14 @@ function rng(seed: number) {
 }
 
 async function readMap(): Promise<{ w: number; h: number; px: Uint8ClampedArray }> {
-  const res = await fetch(MAP_URL);
-  if (!res.ok) throw new Error(`Carte du visage : ${res.status}`);
-  const bmp = await createImageBitmap(await res.blob(), {
+  const parts = await Promise.all(
+    Array.from({ length: MAP_PARTS }, async (_, i) => {
+      const res = await fetch(`/relief/${i}.bin`);
+      if (!res.ok) throw new Error(`Carte du visage : ${res.status}`);
+      return res.arrayBuffer();
+    }),
+  );
+  const bmp = await createImageBitmap(new Blob(parts, { type: "image/webp" }), {
     premultiplyAlpha: "none",
     colorSpaceConversion: "none",
   });

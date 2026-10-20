@@ -1,6 +1,6 @@
 # Carte de relief du visage d'Athéna
 
-`public/athena-relief.webp` (256 × 384, RGBA) est produite hors ligne par
+`athena-relief.webp` (256 × 384, RGBA, copie dans ce dossier) est produite hors ligne par
 `relief.py` à partir de l'image de référence fournie (non versionnée ici) :
 
 - R : ombrage de la sculpture ;
@@ -33,4 +33,5 @@ pip install numpy opencv-python pillow
 python3 relief.py
 ```
 
-Le script écrit `athena-relief.webp`, à copier dans `public/`.
+Le script écrit `athena-relief.webp` et ses six fragments `0.bin` … `5.bin`,
+à copier dans `public/relief/` (le site les réassemble au chargement).
