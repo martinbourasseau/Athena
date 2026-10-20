@@ -30,9 +30,11 @@ export function Kinetic({
 }) {
   let i = 0;
   const words = (text: string) =>
-    text.split(/(\s+)/).map((w, wi) => {
+    // Seules les espaces ordinaires séparent les mots : une espace insécable
+    // garde deux mots ensemble (« agents IA »).
+    text.split(/([ \n\t]+)/).map((w, wi) => {
       if (!w) return null;
-      if (/^\s+$/.test(w)) return <Fragment key={wi}> </Fragment>;
+      if (/^[ \n\t]+$/.test(w)) return <Fragment key={wi}> </Fragment>;
       const idx = i++;
       return (
         <span key={wi} className="w">

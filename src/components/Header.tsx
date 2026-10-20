@@ -3,6 +3,7 @@ import { site } from "@/content/site";
 import { Mark } from "./Mark";
 
 const nav = [
+  { href: "/#capacites", label: "Capacités" },
   { href: "/#services", label: "Services" },
   { href: "/#scenarios", label: "Scénarios" },
   { href: "/#methode", label: "Méthode" },

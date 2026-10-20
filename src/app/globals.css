@@ -531,9 +531,9 @@ fieldset:disabled .button {
   margin-bottom: 26px;
 }
 .hero-title {
-  font-size: clamp(3.3rem, 8.8vw, 9.2rem);
-  line-height: 0.9;
-  max-width: 11ch;
+  font-size: clamp(2.9rem, 6.9vw, 7.4rem);
+  line-height: 0.92;
+  max-width: 14ch;
 }
 .hero-title .tense {
   display: inline-block;
@@ -593,7 +593,7 @@ fieldset:disabled .button {
 @media (max-width: 899px) {
   .hero {
     min-height: calc(100svh - 72px);
-    padding-top: 42vh;
+    padding-top: 37vh;
   }
   .hero-legend {
     display: none;
@@ -684,6 +684,93 @@ fieldset:disabled .button {
   max-width: 34ch;
 }
 
+/* ── Capacités : six domaines de missions ──────────────────── */
+
+.capabilities-head {
+  display: grid;
+  gap: 28px;
+  align-items: end;
+  margin-bottom: clamp(48px, 6vw, 84px);
+}
+@media (min-width: 980px) {
+  .capabilities-head {
+    grid-template-columns: 1.15fr 0.85fr;
+  }
+}
+.capabilities-head .section-lead {
+  margin-top: 0;
+}
+.capabilities-grid {
+  display: grid;
+  border-top: 1px solid var(--line-2);
+}
+@media (min-width: 720px) {
+  .capabilities-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1080px) {
+  .capabilities-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.capability {
+  position: relative;
+  padding: clamp(26px, 3vw, 40px) clamp(0px, 2.4vw, 32px) clamp(30px, 3.4vw, 44px) 0;
+  border-bottom: 1px solid var(--line);
+  background: rgba(4, 8, 11, 0.55);
+}
+@media (min-width: 720px) {
+  .capability {
+    padding-left: clamp(18px, 2.4vw, 32px);
+  }
+  .capability {
+    border-left: 1px solid var(--line);
+  }
+}
+.capability h3 {
+  font-family: var(--display);
+  font-stretch: 112%;
+  font-weight: 340;
+  font-size: clamp(1.45rem, 2vw, 1.8rem);
+  line-height: 1.1;
+}
+.capability-promise {
+  margin-top: 10px;
+  color: var(--lumiere);
+  font-size: 0.98rem;
+  max-width: 34ch;
+}
+.capability ul {
+  margin-top: 18px;
+  display: grid;
+  gap: 8px;
+}
+.capability li {
+  position: relative;
+  padding-left: 20px;
+  color: var(--lin-2);
+  font-size: 0.97rem;
+  line-height: 1.5;
+}
+.capability li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.72em;
+  width: 9px;
+  height: 1px;
+  background: var(--lumiere);
+}
+.capabilities-note {
+  margin-top: clamp(28px, 4vw, 44px);
+  max-width: 70ch;
+  font-size: 0.95rem;
+  color: var(--lin-2);
+  border-left: 1px solid var(--lumiere);
+  padding: 4px 0 4px 18px;
+}
+
 /* ── Services ──────────────────────────────────────────────── */
 
 .services-grid {
@@ -765,8 +852,8 @@ fieldset:disabled .button {
   color: var(--lumiere);
   margin-bottom: 16px;
 }
-.can-label--no {
-  color: var(--lin-2);
+.can-label--keep {
+  color: var(--lin);
 }
 .can-cannot li {
   position: relative;
@@ -1284,48 +1371,259 @@ html:not(.js) .timeline-step {
   color: var(--lin-2);
 }
 
-/* ── SYNATRAP ──────────────────────────────────────────────── */
+/* ── SYNATRAP : registre graphique distinct ───────────────────
+   Une plateforme indépendante : trame technique, tuiles carrées,
+   accent froid. Rien du langage « fil et nœud » d'Athéna ici. */
 
 .synatrap {
-  padding: clamp(80px, 10vw, 140px) 0;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  --signal: #9aa8ff;
+  --signal-2: rgba(154, 168, 255, 0.22);
+  --grid: rgba(154, 168, 255, 0.07);
 }
-.synatrap-inner {
+.syn-panel {
+  position: relative;
   display: grid;
-  gap: 32px;
+  gap: clamp(36px, 5vw, 64px);
+  padding: clamp(28px, 5vw, 72px);
+  border: 1px solid var(--signal-2);
+  background:
+    linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 32px 32px,
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0 / 32px 32px,
+    linear-gradient(160deg, rgba(14, 16, 34, 0.94), rgba(6, 8, 18, 0.96));
+  overflow: hidden;
 }
-@media (min-width: 860px) {
-  .synatrap-inner {
-    grid-template-columns: 1fr 1fr;
-    align-items: end;
+/* Arête lumineuse : le passage de l'univers d'Athéna vers la plateforme. */
+.syn-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, var(--lumiere), var(--signal) 45%, transparent);
+}
+@media (min-width: 980px) {
+  .syn-panel {
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
   }
 }
-.synatrap-title {
-  font-family: var(--display);
-  font-stretch: 150%;
-  font-weight: 200;
-  font-size: clamp(2.2rem, 5vw, 4.4rem);
-  letter-spacing: 0.06em;
+.syn-kicker {
+  font-size: 0.86rem;
+  color: var(--signal);
+}
+.syn-mark {
+  margin-top: 18px;
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: clamp(2.1rem, 5.4vw, 4.6rem);
+  letter-spacing: 0.16em;
   line-height: 1;
+  color: #eef0ff;
 }
-.synatrap-copy {
+.syn-title {
+  margin-top: 22px;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: #eef0ff;
+}
+.syn-lead {
+  margin-top: 14px;
+  max-width: 48ch;
+  color: rgba(232, 234, 255, 0.72);
+}
+.syn-cta {
+  margin-top: 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 24px;
+  background: var(--signal);
+  color: #080a18;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 2px;
+  touch-action: manipulation;
+  transition:
+    background-color 0.2s,
+    transform 0.2s var(--ease-thread),
+    box-shadow 0.3s;
+}
+.syn-cta:hover,
+.syn-cta:focus-visible {
+  background: #c3cbff;
+  box-shadow: 0 10px 34px -12px rgba(154, 168, 255, 0.7);
+}
+.syn-cta:focus-visible {
+  outline-color: var(--signal);
+}
+.syn-cta:active {
+  transform: scale(0.98);
+}
+.syn-atlas-label {
+  font-size: 0.86rem;
+  color: rgba(232, 234, 255, 0.6);
+  margin-bottom: 14px;
+}
+.syn-atlas ul {
   display: grid;
-  gap: 14px;
-  color: var(--lin-2);
-  max-width: 50ch;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
 }
-.synatrap-copy .text-link {
+.syn-atlas li {
+  position: relative;
+  padding: 16px 14px 16px 30px;
+  border: 1px solid var(--signal-2);
+  background: rgba(10, 12, 28, 0.85);
+  color: #e8eaff;
+  font-size: 0.92rem;
+  line-height: 1.3;
+}
+.syn-atlas li::before {
+  content: "";
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  background: var(--signal);
+}
+.syn-compare {
+  margin-top: 20px;
+  display: grid;
+  gap: 20px;
+}
+@media (min-width: 760px) {
+  .syn-compare {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.syn-side {
+  padding: clamp(22px, 3vw, 34px);
+  border: 1px solid var(--line);
+  background: rgba(4, 8, 11, 0.7);
+}
+.syn-side--platform {
+  border-color: var(--signal-2);
+  background: rgba(8, 10, 22, 0.8);
+}
+.syn-side-name {
+  font-size: 0.86rem;
+  color: var(--lumiere);
+}
+.syn-side--platform .syn-side-name {
+  color: var(--signal);
+}
+.syn-side h3 {
   margin-top: 6px;
-  color: var(--lin);
-  justify-self: start;
+  font-family: var(--display);
+  font-stretch: 112%;
+  font-weight: 340;
+  font-size: 1.5rem;
+}
+.syn-side--platform h3 {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 1.35rem;
+}
+.syn-side ul {
+  margin-top: 14px;
+  display: grid;
+  gap: 8px;
+}
+.syn-side li {
+  position: relative;
+  padding-left: 20px;
+  color: var(--lin-2);
+}
+.syn-side li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.75em;
+  width: 9px;
+  height: 1px;
+  background: var(--lumiere);
+}
+.syn-side--platform li::before {
+  width: 5px;
+  height: 5px;
+  top: 0.6em;
+  background: var(--signal);
+}
+.syn-note {
+  margin-top: 18px;
+  font-size: 0.86rem;
+  color: var(--lin-3);
 }
 
 /* ── Contact ───────────────────────────────────────────────── */
 
+.paths {
+  margin-top: clamp(36px, 5vw, 60px);
+  display: grid;
+  gap: 18px;
+}
+@media (min-width: 860px) {
+  .paths {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.path {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 14px;
+  padding: clamp(24px, 3.4vw, 44px);
+  border: 1px solid var(--line-2);
+  background: rgba(4, 8, 11, 0.72);
+}
+.path--synatrap {
+  --signal: #9aa8ff;
+  border-color: rgba(154, 168, 255, 0.24);
+  background:
+    linear-gradient(rgba(154, 168, 255, 0.06) 1px, transparent 1px) 0 0 / 28px 28px,
+    linear-gradient(90deg, rgba(154, 168, 255, 0.06) 1px, transparent 1px) 0 0 / 28px 28px,
+    rgba(8, 10, 22, 0.86);
+}
+.path-for {
+  font-family: var(--display);
+  font-stretch: 110%;
+  font-weight: 360;
+  font-size: clamp(1.4rem, 2.2vw, 1.9rem);
+  line-height: 1.15;
+}
+.path--synatrap .path-for {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: clamp(1.25rem, 1.9vw, 1.6rem);
+}
+.path-text {
+  color: var(--lin-2);
+  max-width: 44ch;
+}
+.path .button,
+.path .syn-cta {
+  margin-top: 8px;
+}
 .contact-grid {
   display: grid;
   gap: clamp(48px, 6vw, 80px);
+  margin-top: clamp(72px, 9vw, 120px);
+  scroll-margin-top: 96px;
+}
+.contact-title {
+  font-family: var(--display);
+  font-stretch: 115%;
+  font-weight: 320;
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  line-height: 1.02;
+}
+.contact-intro .section-lead {
+  margin-top: 20px;
 }
 @media (min-width: 980px) {
   .contact-grid {

@@ -2,10 +2,15 @@ import type { CSSProperties } from "react";
 import { Kinetic, Decode } from "./Kinetic";
 import { Orchestration } from "./Orchestration";
 import { realisations } from "@/content/realisations";
+import { capabilities } from "@/content/capabilities";
 import { site } from "@/content/site";
 
 /* Chaque section porte `data-scene` : la forme que prend l'univers derrière elle.
-   0 visage d'Athéna · 1 chaîne · 2 tissu · 3 réseau · 4 hélice · 5 noyau */
+   0 visage d'Athéna · 1 chaîne · 2 tissu · 3 réseau · 4 hélice · 5 noyau
+
+   Le récit : ce que les agents rendent possible → les missions qu'ils
+   accomplissent → comment nous les concevons → des scénarios pour se
+   projeter → la méthode → deux voies pour continuer (sur mesure ou SYNATRAP). */
 
 export function Hero() {
   return (
@@ -19,18 +24,18 @@ export function Hero() {
           id="hero-title"
           className="hero-title"
           intro
-          parts={["L’intelligence,", { br: true }, { tense: "mise à l’ouvrage." }]}
+          parts={["Des agents\u00a0IA", { br: true }, { tense: "qui font avancer votre entreprise." }]}
         />
         <p className="hero-lead hero-in" style={{ "--d": "700ms" } as CSSProperties}>
-          Nous concevons, développons et personnalisons des agents IA qui exécutent de vraies tâches dans votre
-          entreprise. Ils partent de vos outils et de vos règles, et s&apos;arrêtent là où vous voulez garder la main.
+          De la tâche répétitive au processus complet, nous concevons des agents qui recherchent, analysent,
+          rédigent, organisent et agissent dans vos outils, selon vos objectifs et vos règles.
         </p>
         <div className="hero-actions hero-in" style={{ "--d": "820ms" } as CSSProperties}>
           <a href="#contact" className="button">
-            Parler de votre projet
+            Décrire mon projet
           </a>
-          <a href="#scenarios" className="button button--ghost">
-            Voir des scénarios
+          <a href="#capacites" className="button button--ghost">
+            Ce qu&apos;un agent peut faire
           </a>
         </div>
       </div>
@@ -52,17 +57,17 @@ const pillars = [
   {
     word: "La chaîne",
     title: "Sur mesure",
-    body: "L'agent part de vos outils, de vos documents et de votre façon de travailler. Pas l'inverse.",
+    body: "Chaque agent est construit autour de vos outils, de vos documents et de votre façon de travailler.",
   },
   {
     word: "La navette",
-    title: "Exécution",
-    body: "Il agit vraiment : il lit, classe, rédige, met à jour et vous rend compte de ce qu'il a fait.",
+    title: "Action",
+    body: "Il ne se contente pas de répondre : il lit, classe, rédige, met à jour vos outils et rend compte de son travail.",
   },
   {
     word: "Le nœud",
-    title: "Contrôle",
-    body: "Aux étapes que vous choisissez, l'agent s'arrête et attend votre validation avant d'aller plus loin.",
+    title: "Maîtrise",
+    body: "Vous fixez son périmètre, ses accès et les étapes qui passent par votre validation.",
   },
 ];
 
@@ -124,18 +129,64 @@ function PillarGlyph({ index }: { index: number }) {
   );
 }
 
+export function Capabilities() {
+  return (
+    <section id="capacites" className="section capabilities" data-scene="2" aria-labelledby="capacites-title">
+      <div className="wrap">
+        <div className="capabilities-head">
+          <div>
+            <p className="section-label">Ce qu&apos;un agent peut accomplir</p>
+            <Kinetic
+              id="capacites-title"
+              className="section-title"
+              parts={["Bien plus qu’un chatbot. ", { tense: "Un agent qui agit." }]}
+            />
+          </div>
+          <p className="section-lead" data-reveal>
+            Un agent IA ne se limite pas à répondre à des questions. Il recherche, analyse, produit et enchaîne des
+            actions dans vos outils, pour prendre en charge une partie réelle de vos processus.
+          </p>
+        </div>
+        <div className="capabilities-grid">
+          {capabilities.map((c, i) => (
+            <article
+              key={c.id}
+              className="capability"
+              data-reveal
+              style={{ "--d": `${(i % 3) * 90}ms` } as CSSProperties}
+            >
+              <h3>{c.name}</h3>
+              <p className="capability-promise">{c.promise}</p>
+              <ul>
+                {c.missions.map((m) => (
+                  <li key={m}>{m}</li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+        <p className="capabilities-note" data-reveal>
+          Ce sont des possibilités de conception. Ce qu&apos;un agent accomplit concrètement dépend de la façon dont
+          nous le construisons, des outils que nous lui connectons, des données disponibles et des autorisations que
+          vous lui accordez.
+        </p>
+      </div>
+    </section>
+  );
+}
+
 const services = [
   {
     name: "Concevoir",
-    body: "Nous identifions avec vous la tâche à confier, les informations dont l'agent a besoin, ses limites et les moments où il doit vous solliciter.",
+    body: "Nous définissons avec vous les missions à confier, les informations dont l'agent a besoin, son périmètre et les moments où il vous sollicite.",
   },
   {
     name: "Développer",
-    body: "Nous construisons l'agent et le relions aux outils nécessaires, puis nous le testons sur des cas réels avant tout usage courant.",
+    body: "Nous construisons l'agent, le relions à vos outils et le mettons à l'épreuve sur vos cas réels avant son usage quotidien.",
   },
   {
     name: "Personnaliser",
-    body: "Nous ajustons son ton, ses règles et son périmètre à votre activité, et nous le faisons évoluer avec vos retours.",
+    body: "Nous accordons son ton, ses règles et ses missions à votre activité, puis nous le faisons grandir avec vos retours.",
   },
 ];
 
@@ -145,10 +196,10 @@ export function Services() {
       <div className="wrap services-grid">
         <div className="services-intro">
           <p className="section-label">Services</p>
-          <Kinetic id="services-title" className="section-title" parts={["Un agent pensé ", { tense: "pour votre travail." }]} />
+          <Kinetic id="services-title" className="section-title" parts={["Conçu pour ", { tense: "votre entreprise." }]} />
           <p className="section-lead" data-reveal>
-            Chaque agent est construit pour une tâche précise, dans votre contexte. Nous l&apos;accompagnons de la
-            première idée jusqu&apos;à son usage au quotidien.
+            Athéna conçoit des agents sur mesure : pour vos missions, dans vos outils, selon vos règles. Nous vous
+            accompagnons de la première idée jusqu&apos;à l&apos;usage quotidien.
           </p>
         </div>
         <ol className="services-list">
@@ -166,21 +217,21 @@ export function Services() {
       <div className="wrap">
         <div className="can-cannot" data-reveal>
           <div>
-            <h3 className="can-label">Ce qu&apos;un agent sait faire</h3>
+            <h3 className="can-label">Ce que vous lui confiez</h3>
             <ul>
-              <li>Lire, trier et résumer des informations</li>
-              <li>Rédiger des brouillons dans votre ton</li>
-              <li>Appliquer des règles que vous définissez</li>
-              <li>Agir dans les outils auxquels il a accès</li>
+              <li>Lire, trier et synthétiser l&apos;information</li>
+              <li>Rédiger dans votre ton, sur chaque support</li>
+              <li>Appliquer vos règles métier, à chaque fois</li>
+              <li>Agir dans les outils que vous lui connectez</li>
             </ul>
           </div>
           <div>
-            <h3 className="can-label can-label--no">Ce qu&apos;il ne fait pas</h3>
+            <h3 className="can-label can-label--keep">Ce que vous gardez en main</h3>
             <ul>
-              <li>Décider seul de ce qui engage votre entreprise</li>
-              <li>Accéder à ce que vous n&apos;avez pas autorisé</li>
-              <li>Remplacer votre jugement sur les cas sensibles</li>
-              <li>Être infaillible : il est conçu pour être vérifié</li>
+              <li>Les décisions qui engagent votre entreprise</li>
+              <li>Les accès accordés, et seulement ceux-là</li>
+              <li>Les étapes qui passent par votre validation</li>
+              <li>L&apos;évolution de ses missions</li>
             </ul>
           </div>
         </div>
@@ -203,8 +254,8 @@ export function Scenarios() {
             />
           </div>
           <p className="notice" data-reveal>
-            Les exemples ci-dessous sont des cas d&apos;usage possibles. Ce ne sont ni des clients, ni des projets
-            réalisés, ni des résultats mesurés.
+            Des scénarios pour vous projeter : ce sont des cas d&apos;usage possibles, pas des clients, des projets
+            réalisés ou des résultats mesurés.
           </p>
         </div>
         <div data-reveal>
@@ -241,8 +292,8 @@ export function Realisations() {
           </div>
         ) : (
           <p className="realisations-empty" data-reveal>
-            Les réalisations détaillées seront présentées ici dès qu&apos;elles pourront être documentées et validées
-            avec les personnes concernées.
+            Nos réalisations seront présentées ici, en détail, dès qu&apos;elles auront été documentées et validées
+            avec les entreprises concernées.
           </p>
         )}
       </div>
@@ -253,19 +304,19 @@ export function Realisations() {
 const phases = [
   {
     name: "Diagnostic",
-    body: "Nous partons d'une tâche concrète : ce qu'elle demande, les outils en jeu, les risques et ce qu'il faut garder sous contrôle.",
+    body: "Nous partons de vos missions concrètes : ce qu'elles demandent, les outils et données en jeu, les étapes à valider.",
   },
   {
     name: "Prototype",
-    body: "Une première version de l'agent est testée sur des exemples réels, avec vous, pour vérifier qu'il fait ce qui est attendu.",
+    body: "Une première version de l'agent travaille sur vos exemples réels, avec vous, jusqu'à faire exactement ce qui est attendu.",
   },
   {
     name: "Déploiement",
-    body: "L'agent est installé dans votre environnement, avec ses accès limités au nécessaire et ses points de validation.",
+    body: "L'agent rejoint votre environnement de travail, avec les accès nécessaires et ses points de validation.",
   },
   {
     name: "Suivi",
-    body: "Nous observons son fonctionnement, corrigeons ce qui doit l'être et l'ajustons à mesure que vos besoins évoluent.",
+    body: "Nous suivons son travail, affinons ses réglages et lui confions de nouvelles missions à mesure que vos besoins évoluent.",
   },
 ];
 
@@ -275,7 +326,7 @@ export function Method() {
       <div className="wrap method-grid">
         <div className="method-intro">
           <p className="section-label">Méthode</p>
-          <Kinetic id="method-title" className="section-title" parts={["Quatre étapes, ", { tense: "un seul fil." }]} />
+          <Kinetic id="method-title" className="section-title" parts={["De l’idée à l’usage, ", { tense: "un seul fil." }]} />
         </div>
         <div className="timeline" data-progress>
           <span className="timeline-rail" aria-hidden="true">
@@ -304,27 +355,27 @@ export function Trust() {
     <section id="confiance" className="section trust" data-scene="4" aria-labelledby="trust-title">
       <div className="wrap">
         <p className="section-label">Confiance et données</p>
-        <Kinetic id="trust-title" className="section-title" parts={["Voir clair, ", { tense: "même dans le noir." }]} />
+        <Kinetic id="trust-title" className="section-title" parts={["Puissant, ", { tense: "et sous votre contrôle." }]} />
         <div className="trust-grid">
           <article data-reveal>
             <h3>Vous gardez la main</h3>
             <p>
-              Les points de validation sont définis avec vous. Ce qui engage votre entreprise passe par une décision
+              Les points de validation sont définis avec vous : ce qui engage votre entreprise passe par une décision
               humaine.
             </p>
           </article>
           <article data-reveal style={{ "--d": "100ms" } as CSSProperties}>
-            <h3>Des accès limités</h3>
+            <h3>Des accès maîtrisés</h3>
             <p>
-              Nous recensons ensemble les données dont l&apos;agent a besoin, et seulement celles-là. Le traitement
+              L&apos;agent accède aux outils et aux données que vous lui ouvrez, et seulement à ceux-là. Le traitement
               des données personnelles est cadré dès le diagnostic.
             </p>
           </article>
           <article data-reveal style={{ "--d": "200ms" } as CSSProperties}>
-            <h3>Des limites assumées</h3>
+            <h3>Un travail vérifiable</h3>
             <p>
-              Une IA peut se tromper. Chaque agent est conçu pour être vérifiable : il cite ses sources, signale ses
-              doutes et rend compte de ce qu&apos;il fait.
+              Chaque agent cite ses sources, signale ses incertitudes et rend compte de ce qu&apos;il a fait : vous
+              savez toujours sur quoi il s&apos;appuie.
             </p>
           </article>
         </div>
@@ -333,27 +384,79 @@ export function Trust() {
   );
 }
 
+/* Secteurs présentés sur synatrap.com (relevés sur le site officiel). */
+const synatrapSectors = [
+  "Opérations et gestion",
+  "Support client",
+  "Données et Excel",
+  "Développement",
+  "E-commerce",
+  "Marketing",
+  "Recherche et veille",
+  "Ventes",
+];
+
+/**
+ * SYNATRAP : plateforme indépendante, avec sa propre identité. La section
+ * change volontairement de registre graphique (trame, tuiles, accent froid)
+ * pour ne pas laisser croire qu'il s'agit d'une page d'Athéna.
+ * Contenu limité à ce que présente synatrap.com.
+ */
 export function Synatrap() {
   return (
     <section id="synatrap" className="section synatrap" data-scene="5" aria-labelledby="synatrap-title">
-      <div className="wrap synatrap-inner" data-reveal>
-        <div>
-          <p className="section-label">Plateforme complémentaire</p>
-          <h2 id="synatrap-title" className="synatrap-title">
-            {site.synatrap.name}
-          </h2>
+      <div className="wrap">
+        <div className="syn-panel" data-reveal>
+          <div className="syn-copy">
+            <p className="syn-kicker">Plateforme indépendante</p>
+            <p className="syn-mark" aria-hidden="true">
+              {site.synatrap.name}
+            </p>
+            <h2 id="synatrap-title" className="syn-title">
+              Les agents IA ont leur plateforme.
+            </h2>
+            <p className="syn-lead">
+              {site.synatrap.name} est une plateforme entièrement consacrée aux agents IA. On y découvre des agents
+              professionnels prêts à installer sur son ordinateur, et un atelier pour créer le sien.
+            </p>
+            <a className="syn-cta" href={site.synatrap.url} target="_blank" rel="noopener">
+              Découvrir {site.synatrap.name} <span aria-hidden="true">↗</span>
+              <span className="sr-only">(synatrap.com, nouvel onglet)</span>
+            </a>
+          </div>
+          <div className="syn-atlas">
+            <p className="syn-atlas-label">Des agents classés par secteur</p>
+            <ul>
+              {synatrapSectors.map((sector) => (
+                <li key={sector}>{sector}</li>
+              ))}
+            </ul>
+          </div>
         </div>
-        <div className="synatrap-copy">
-          <p>
-            SYNATRAP est une plateforme indépendante qui permet de découvrir des agents IA. C&apos;est un projet
-            distinct d&apos;Athéna, avec son propre site.
-          </p>
-          <p>Athéna, de son côté, conçoit des agents sur mesure pour votre entreprise.</p>
-          <a className="text-link" href={site.synatrap.url} target="_blank" rel="noopener">
-            Découvrir SYNATRAP sur synatrap.com <span aria-hidden="true">↗</span>
-            <span className="sr-only">(site externe, nouvel onglet)</span>
-          </a>
+
+        <div className="syn-compare" data-reveal>
+          <div className="syn-side syn-side--athena">
+            <p className="syn-side-name">{site.name}</p>
+            <h3>Un agent conçu pour vous</h3>
+            <ul>
+              <li>Un projet accompagné, de l&apos;idée à l&apos;intégration</li>
+              <li>Un agent construit pour vos outils, vos données et vos règles</li>
+              <li>Pour un besoin propre à votre entreprise</li>
+            </ul>
+          </div>
+          <div className="syn-side syn-side--platform">
+            <p className="syn-side-name">{site.synatrap.name}</p>
+            <h3>Une plateforme à explorer</h3>
+            <ul>
+              <li>Des agents professionnels prêts à installer</li>
+              <li>Un atelier pour créer votre propre agent</li>
+              <li>Pour découvrir les agents IA à votre rythme</li>
+            </ul>
+          </div>
         </div>
+        <p className="syn-note">
+          {site.name} et {site.synatrap.name} sont deux projets distincts, chacun avec son propre site.
+        </p>
       </div>
     </section>
   );

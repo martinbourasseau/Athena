@@ -4,9 +4,13 @@ import { QualificationForm } from "./QualificationForm";
 import { Kinetic } from "./Kinetic";
 
 /**
- * Trois parcours : formulaire de qualification (principal), email et
- * réservation (alternatives). Chacun n'est actif que s'il est réellement
- * configuré ; sinon il l'indique clairement.
+ * Fin de page : deux voies pour continuer.
+ * A — un besoin propre à l'entreprise : décrire son projet à Athéna.
+ * B — découvrir SYNATRAP, plateforme indépendante, sur son propre site.
+ *
+ * Pour la voie A, trois moyens de contact : formulaire de qualification
+ * (principal), email et réservation. Chacun n'est actif que s'il est
+ * réellement configuré ; sinon il l'indique clairement.
  */
 export function Contact() {
   const formEnabled = isFormConfigured();
@@ -15,12 +19,37 @@ export function Contact() {
 
   return (
     <section id="contact" className="section contact" data-scene="5" aria-labelledby="contact-title">
-      <div className="wrap contact-grid">
+      <div className="wrap">
+        <p className="section-label">Pour continuer</p>
+        <Kinetic id="contact-title" className="section-title" parts={["Deux voies, ", { tense: "à vous de choisir." }]} />
+        <div className="paths" data-reveal>
+          <div className="path path--athena">
+            <p className="path-for">J&apos;ai un besoin spécifique pour mon entreprise</p>
+            <p className="path-text">
+              Décrivez votre projet : nous étudions avec vous l&apos;agent sur mesure qui peut y répondre.
+            </p>
+            <a className="button" href="#projet">
+              Décrire mon projet
+            </a>
+          </div>
+          <div className="path path--synatrap">
+            <p className="path-for">Je veux découvrir {site.synatrap.name}</p>
+            <p className="path-text">
+              Explorez des agents prêts à installer ou créez le vôtre sur la plateforme {site.synatrap.name}.
+            </p>
+            <a className="syn-cta" href={site.synatrap.url} target="_blank" rel="noopener">
+              Découvrir {site.synatrap.name} <span aria-hidden="true">↗</span>
+              <span className="sr-only">(synatrap.com, nouvel onglet)</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div className="wrap contact-grid" id="projet">
         <div className="contact-intro">
-          <p className="section-label">Contact</p>
-          <Kinetic id="contact-title" className="section-title" parts={["Parlons de ", { tense: "votre agent." }]} />
+          <h3 className="contact-title">Décrire votre projet</h3>
           <p className="section-lead" data-reveal>
-            Décrivez la tâche que vous aimeriez confier à un agent. Quelques lignes suffisent pour démarrer
+            Quelles missions aimeriez-vous confier à un agent ? Quelques lignes suffisent pour démarrer
             l&apos;échange.
           </p>
 

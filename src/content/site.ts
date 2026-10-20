@@ -20,7 +20,7 @@ export const site = {
   locale: "fr_FR",
 
   description:
-    "Athéna conçoit, développe et personnalise des agents IA sur mesure pour les entreprises, entrepreneurs et professionnels : des agents qui exécutent de vraies tâches, sous votre contrôle.",
+    "Athéna conçoit des agents IA sur mesure pour les entreprises : des agents qui recherchent, analysent, rédigent, organisent et agissent dans vos outils, selon vos objectifs et vos règles.",
 
   location: {
     label: "Nantes · Pays de la Loire · France",

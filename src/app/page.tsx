@@ -1,4 +1,4 @@
-import { Hero, Pillars, Services, Scenarios, Realisations, Method, Trust, Synatrap } from "@/components/Sections";
+import { Hero, Pillars, Capabilities, Services, Scenarios, Realisations, Method, Trust, Synatrap } from "@/components/Sections";
 import { Contact } from "@/components/Contact";
 import { site } from "@/content/site";
 import { siteUrl } from "@/lib/env";
@@ -19,6 +19,7 @@ function jsonLd() {
       "Conception d'agents IA sur mesure",
       "Développement d'agents IA",
       "Personnalisation d'agents IA",
+      "Automatisation de processus par agents IA",
     ],
     parentOrganization: {
       "@type": "Organization",
@@ -36,6 +37,7 @@ export default function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd() }} />
       <Hero />
       <Pillars />
+      <Capabilities />
       <Services />
       <Scenarios />
       <Realisations />
