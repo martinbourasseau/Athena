@@ -550,12 +550,15 @@ fieldset:disabled .button {
   flex-wrap: wrap;
   gap: 14px;
 }
+/* Légende du visage : en haut à droite, à côté du cimier, loin des traits. */
 .hero-legend {
   position: absolute;
   right: var(--gutter);
-  bottom: clamp(70px, 12vh, 130px);
-  max-width: 26ch;
+  top: clamp(36px, 7vh, 72px);
+  max-width: 21ch;
   display: grid;
+  justify-items: end;
+  text-align: right;
   gap: 12px;
   font-size: 0.86rem;
   color: var(--lin-3);

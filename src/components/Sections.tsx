@@ -5,7 +5,7 @@ import { realisations } from "@/content/realisations";
 import { site } from "@/content/site";
 
 /* Chaque section porte `data-scene` : la forme que prend l'univers derrière elle.
-   0 nœud · 1 chaîne · 2 tissu · 3 réseau · 4 hélice · 5 noyau */
+   0 visage d'Athéna · 1 chaîne · 2 tissu · 3 réseau · 4 hélice · 5 noyau */
 
 export function Hero() {
   return (
@@ -36,7 +36,7 @@ export function Hero() {
       </div>
       <p className="hero-legend hero-in" style={{ "--d": "1100ms" } as CSSProperties}>
         <span className="hero-legend-line" aria-hidden="true" />
-        Un nœud de fils lumineux : vos outils, vos données et vos règles, reliés par un agent.
+        Athéna, déesse de l&apos;intelligence et de l&apos;ouvrage, sculptée en points de lumière.
       </p>
       <a className="scroll-cue hero-in" href="#principe" style={{ "--d": "1300ms" } as CSSProperties}>
         <span className="sr-only">Aller au principe</span>

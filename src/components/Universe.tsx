@@ -21,12 +21,21 @@ export function Universe() {
     const wide = window.innerWidth >= 900;
     const nav = navigator as Navigator & { deviceMemory?: number };
     const modest = (nav.hardwareConcurrency ?? 8) < 4 || (nav.deviceMemory ?? 8) < 4;
-    const count = !wide ? 9000 : modest ? 12000 : 26000;
+    // Le visage demande un peu plus de points que les formes abstraites pour
+    // rester lisible ; le coût reste faible (un seul appel de dessin).
+    const count = !wide ? 16000 : modest ? 20000 : 42000;
 
     const boot = () =>
-      import("@/lib/universe/engine").then(({ createUniverse }) => {
+      Promise.all([
+        import("@/lib/universe/engine"),
+        // Sans la carte du visage, la scène 0 retombe sur le nœud abstrait.
+        import("@/lib/universe/face").then(({ loadFace }) => loadFace(count)).catch((err) => {
+          console.warn("Visage d'Athéna indisponible, forme abstraite utilisée.", err);
+          return null;
+        }),
+      ]).then(([{ createUniverse }, face]) => {
         if (cancelled) return;
-        handle = createUniverse(canvas, { count, dprCap: wide ? 1.75 : 1.5, reducedMotion: reduced });
+        handle = createUniverse(canvas, { count, dprCap: wide ? 1.75 : 1.5, reducedMotion: reduced, face });
         setState(handle ? "on" : "off");
       });
 

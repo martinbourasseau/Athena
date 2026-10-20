@@ -1,5 +1,6 @@
 import { FRAG, VERT } from "./shaders";
 import { universe } from "./bus";
+import type { FaceData } from "./face";
 
 /**
  * Moteur WebGL de l'univers Athéna — écrit à la main, sans bibliothèque.
@@ -15,12 +16,17 @@ import { universe } from "./bus";
  *   le nombre de particules et la densité de pixels ;
  * - gestion de la perte de contexte WebGL ;
  * - mouvement réduit : temps figé, rendu uniquement quand la scène change.
+ *
+ * Le visage d'Athéna (scène 0) ajoute deux attributs par particule, envoyés
+ * une seule fois : sa place sur la sculpture et sa normale.
  */
 
 export type UniverseOptions = {
   count: number;
   dprCap: number;
   reducedMotion: boolean;
+  /** Géométrie du visage (scène 0). Absente : la scène 0 reste le nœud. */
+  face?: FaceData | null;
 };
 
 export type UniverseHandle = {
@@ -82,6 +88,9 @@ export function createUniverse(canvas: HTMLCanvasElement, opts: UniverseOptions)
 
   let program: WebGLProgram;
   let pointBuf: WebGLBuffer, threadBuf: WebGLBuffer, threadIdx: WebGLBuffer;
+  let faceBuf: WebGLBuffer | null = null;
+  let auxBuf: WebGLBuffer | null = null;
+  const face = opts.face && opts.face.pos.length >= opts.count * 4 ? opts.face : null;
   let threadIndexCount = 0;
   const U: Record<string, WebGLUniformLocation | null> = {};
   let loc = { t: 0, r: 1 };
@@ -100,13 +109,15 @@ export function createUniverse(canvas: HTMLCanvasElement, opts: UniverseOptions)
     gl!.attachShader(program, fs);
     gl!.bindAttribLocation(program, 0, "a_t");
     gl!.bindAttribLocation(program, 1, "a_r");
+    gl!.bindAttribLocation(program, 2, "a_f");
+    gl!.bindAttribLocation(program, 3, "a_n");
     gl!.linkProgram(program);
     if (!gl!.getProgramParameter(program, gl!.LINK_STATUS)) throw new Error(gl!.getProgramInfoLog(program) || "link");
     gl!.useProgram(program);
     loc = { t: 0, r: 1 };
     for (const n of [
       "uTime", "uScene", "uThread", "uThreads", "uCount", "uAspect", "uPx",
-      "uWide", "uMotion", "uMouse", "uMouseOn", "uProj",
+      "uWide", "uMotion", "uMouse", "uMouseOn", "uProj", "uHasFace",
     ]) U[n] = gl!.getUniformLocation(program, n);
 
     // Particules : rang + 4 aléas, entrelacés (5 flottants).
@@ -155,6 +166,15 @@ export function createUniverse(canvas: HTMLCanvasElement, opts: UniverseOptions)
     gl!.bindBuffer(gl!.ELEMENT_ARRAY_BUFFER, threadIdx);
     gl!.bufferData(gl!.ELEMENT_ARRAY_BUFFER, idx, gl!.STATIC_DRAW);
 
+    if (face) {
+      faceBuf = gl!.createBuffer()!;
+      gl!.bindBuffer(gl!.ARRAY_BUFFER, faceBuf);
+      gl!.bufferData(gl!.ARRAY_BUFFER, face.pos, gl!.STATIC_DRAW);
+      auxBuf = gl!.createBuffer()!;
+      gl!.bindBuffer(gl!.ARRAY_BUFFER, auxBuf);
+      gl!.bufferData(gl!.ARRAY_BUFFER, face.aux, gl!.STATIC_DRAW);
+    }
+
     gl!.disable(gl!.DEPTH_TEST);
     gl!.enable(gl!.BLEND);
     gl!.blendFunc(gl!.ONE, gl!.ONE); // lumière additive
@@ -162,14 +182,26 @@ export function createUniverse(canvas: HTMLCanvasElement, opts: UniverseOptions)
     gl!.uniform1f(U.uThreads, THREADS);
     gl!.uniform1f(U.uCount, count);
     gl!.uniform1f(U.uMotion, opts.reducedMotion ? 0 : 1);
+    gl!.uniform1f(U.uHasFace, face ? 1 : 0);
   }
 
-  function bindAttribs(buf: WebGLBuffer) {
+  function bindAttribs(buf: WebGLBuffer, withFace: boolean) {
     gl!.bindBuffer(gl!.ARRAY_BUFFER, buf);
     gl!.enableVertexAttribArray(loc.t);
     gl!.vertexAttribPointer(loc.t, 1, gl!.FLOAT, false, 20, 0);
     gl!.enableVertexAttribArray(loc.r);
     gl!.vertexAttribPointer(loc.r, 4, gl!.FLOAT, false, 20, 4);
+    // Attributs du visage : par particule, ou valeur constante (filaments, repli).
+    for (const [slot, b] of [[2, faceBuf], [3, auxBuf]] as const) {
+      if (withFace && b) {
+        gl!.bindBuffer(gl!.ARRAY_BUFFER, b);
+        gl!.enableVertexAttribArray(slot);
+        gl!.vertexAttribPointer(slot, 4, gl!.FLOAT, false, 0, 0);
+      } else {
+        gl!.disableVertexAttribArray(slot);
+        gl!.vertexAttrib4f(slot, 0, 0, 0, 0);
+      }
+    }
   }
 
   function resize() {
@@ -211,12 +243,12 @@ export function createUniverse(canvas: HTMLCanvasElement, opts: UniverseOptions)
     gl!.uniform1f(U.uMouseOn, mouseOn);
 
     gl!.uniform1f(U.uThread, 1);
-    bindAttribs(threadBuf);
+    bindAttribs(threadBuf, false);
     gl!.bindBuffer(gl!.ELEMENT_ARRAY_BUFFER, threadIdx);
     gl!.drawElements(gl!.LINES, threadIndexCount, gl!.UNSIGNED_SHORT, 0);
 
     gl!.uniform1f(U.uThread, 0);
-    bindAttribs(pointBuf);
+    bindAttribs(pointBuf, true);
     gl!.drawArrays(gl!.POINTS, 0, drawCount);
   }
 

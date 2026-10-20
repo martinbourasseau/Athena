@@ -6,13 +6,20 @@
  * scènes, puis interpolée selon `uScene`. Le processeur ne transmet que
  * quelques uniformes par image : aucune boucle JavaScript par particule.
  *
- * Scènes : 0 nœud · 1 chaîne · 2 tissu · 3 réseau · 4 hélice · 5 noyau
+ * Scènes : 0 visage d'Athéna · 1 chaîne · 2 tissu · 3 réseau · 4 hélice · 5 noyau
+ *
+ * Le visage fait exception : sa géométrie vient d'une carte de relief
+ * (voir face.ts). Chaque particule reçoit une fois pour toutes sa place sur
+ * la sculpture (`a_f`) et sa normale (`a_n`). Sans cette carte, la scène 0
+ * retombe sur le nœud torique.
  */
 
 export const VERT = /* glsl */ `
 precision highp float;
 attribute float a_t;
 attribute vec4 a_r;
+attribute vec4 a_f;      // visage : position sur la sculpture (xyz) + ombrage (w)
+attribute vec4 a_n;      // visage : normale (xy) + intensité de contour (z)
 
 uniform float uTime;
 uniform float uScene;
@@ -26,6 +33,7 @@ uniform float uMotion;   // 0.0 en mouvement réduit
 uniform vec2  uMouse;
 uniform float uMouseOn;
 uniform mat4  uProj;
+uniform float uHasFace;  // 1.0 quand la carte du visage est chargée
 
 varying mediump float vA;
 varying mediump vec3  vC;
@@ -35,6 +43,7 @@ const float TAU = 6.28318531;
 
 vec3 rotY(vec3 p, float a) { float c = cos(a), s = sin(a); return vec3(c*p.x + s*p.z, p.y, -s*p.x + c*p.z); }
 vec3 rotX(vec3 p, float a) { float c = cos(a), s = sin(a); return vec3(p.x, c*p.y - s*p.z, s*p.y + c*p.z); }
+vec3 rotZ(vec3 p, float a) { float c = cos(a), s = sin(a); return vec3(c*p.x - s*p.y, s*p.x + c*p.y, p.z); }
 float h1(float n) { return fract(sin(n * 91.3458) * 47453.5453); }
 
 // ── 0 · Le nœud : nœud torique (2,3), volume de particules, filaments en hélice autour du tube
@@ -50,6 +59,33 @@ vec3 sKnot(float t, vec4 r) {
   // Un tube dense et net, plus un halo clairsemé (8 % des particules).
   float rad = r.y > 0.92 ? 0.08 + 0.22 * r.w : 0.018 + 0.085 * r.w * r.w * r.w;
   return c + d * rad;
+}
+
+// ── 0 · Le visage d'Athéna : relief reconstruit à partir de l'image de référence.
+// Points sur la sculpture ; quelques-uns se détachent du casque et des cheveux,
+// dérivent puis reviennent. Les filaments sont des orbites lentes autour de la tête.
+vec3 sFace(float t, vec4 r) {
+  float sc = mix(0.78, 1.16, uWide);
+  if (uThread > 0.5) {
+    float id = floor(r.x * uThreads);
+    float a = r.y * TAU + uTime * (0.05 + 0.012 * id) * (mod(id, 2.0) * 2.0 - 1.0);
+    float R = 0.62 + 0.07 * id;
+    vec3 o = vec3(cos(a) * R, sin(a * 2.0 + id) * 0.025, sin(a) * R * 0.55);
+    o = rotZ(rotX(o, 0.22 + 0.16 * mod(id, 3.0)), (id - 3.5) * 0.075);
+    // Étagées du cimier au cou.
+    return (o + vec3(0.02, 0.48 - 0.09 * id, 0.0)) * sc;
+  }
+  vec3 p = a_f.xyz;
+  // Échappées : ~10 % des points du casque et des cheveux, jamais ceux du visage.
+  float inFace = step(0.0, p.x) * step(p.x, 0.55) * step(-0.46, p.y) * step(p.y, 0.16);
+  float drifter = step(r.z, 0.10) * (1.0 - inFace) * uMotion;
+  float k = fract(uTime * (0.03 + 0.03 * r.w) + r.x * 7.0);
+  float out1 = sin(PI * k);
+  out1 *= out1;
+  vec3 dir = normalize(p - vec3(-0.05, 0.05, -0.3) + vec3(0.0, 0.25 + 0.35 * step(0.35, p.y), 0.0));
+  p += drifter * out1 * (dir * (0.1 + 0.32 * r.y)
+       + 0.05 * vec3(sin(uTime * 0.7 + r.x * 30.0), cos(uTime * 0.5 + r.y * 20.0), sin(uTime * 0.4 + r.w * 9.0)));
+  return p * sc;
 }
 
 // ── 1 · La chaîne : fils verticaux, les données y circulent vers le bas
@@ -137,7 +173,7 @@ vec3 sCore(float t, vec4 r) {
 }
 
 vec3 shape(float id, float t, vec4 r) {
-  if (id < 0.5) return sKnot(t, r);
+  if (id < 0.5) return uHasFace > 0.5 ? sFace(t, r) : sKnot(t, r);
   if (id < 1.5) return sWarp(t, r);
   if (id < 2.5) return sWeave(t, r);
   if (id < 3.5) return sNet(t, r);
@@ -149,7 +185,11 @@ vec3 shape(float id, float t, vec4 r) {
 // en haut et en retrait sur mobile.
 vec3 place(float id) {
   vec3 w, m;
-  if (id < 0.5)      { w = vec3(0.96, 0.05, 0.0);  m = vec3(0.0, 0.52, -0.5); }
+  if (id < 0.5)      {
+    // Visage : à droite du texte sur grand écran, en haut sur mobile.
+    if (uHasFace > 0.5) { w = vec3(0.93, -0.2, 0.0); m = vec3(-0.04, 0.3, -0.6); }
+    else { w = vec3(0.96, 0.05, 0.0); m = vec3(0.0, 0.52, -0.5); }
+  }
   else if (id < 1.5) { w = vec3(0.0, 0.0, -0.4);   m = vec3(0.0, 0.0, -0.5); }
   else if (id < 2.5) { w = vec3(0.85, -0.15, -0.5); m = vec3(0.0, 0.35, -1.0); }
   else if (id < 3.5) { w = vec3(0.92, 0.42, -0.4); m = vec3(0.0, 0.45, -1.0); }
@@ -180,7 +220,16 @@ void main() {
   float ry = sin(uTime * 0.11) * 0.42 * uMotion + uMouse.x * 0.45 * uMouseOn;
   float rx = -0.12 - uMouse.y * 0.25 * uMouseOn;
 
-  vec3 pa = rotX(rotY(shape(a, a_t, a_r), ry), rx) + place(a);
+  // Le visage est un relief vu de face : on le décale à l'écran (décentrement
+  // d'objectif) plutôt que dans l'espace, sinon la perspective le verrait de
+  // biais et écraserait ses traits contre le bord.
+  vec2 lens = (a < 0.5 && uHasFace > 0.5) ? place(a).xy : vec2(0.0);
+  // Le visage, relief vu de trois quarts, ne pivote que très peu et toujours
+  // du côté qui dévoile ses traits : sinon ils s'écrasent contre la silhouette.
+  bool isFace = a < 0.5 && uHasFace > 0.5;
+  float ryA = isFace ? (-0.06 + sin(uTime * 0.11) * 0.035) * uMotion + (uMouse.x * 0.05 - 0.02) * uMouseOn : ry;
+  float rxA = isFace ? -0.03 - uMouse.y * 0.07 * uMouseOn : rx;
+  vec3 pa = rotX(rotY(shape(a, a_t, a_r), ryA), rxA) + place(a) - vec3(lens, 0.0);
   vec3 pb = rotX(rotY(shape(b, a_t, a_r), ry), rx) + place(b);
   vec3 p = mix(pa, pb, fi);
 
@@ -193,6 +242,7 @@ void main() {
   );
 
   vec4 clip = uProj * vec4(p.x, p.y, p.z - 3.4, 1.0);
+  clip.xy += (1.0 - fi) * lens * vec2(uProj[0][0], uProj[1][1]) / 3.4 * clip.w;
 
   // Le pointeur écarte les particules (en espace écran) et les éclaire.
   vec2 ndc = clip.xy / clip.w;
@@ -204,18 +254,40 @@ void main() {
   clip.xy = ndc * clip.w;
   gl_Position = clip;
 
-  float ember = step(0.972, a_r.x) * (1.0 - uThread);
+  // Poids du visage dans le mélange courant (1 sur le hero, 0 ailleurs).
+  float fw = (a < 0.5 ? 1.0 - fi : 0.0) * uHasFace;
+
+  float ember = mix(step(0.972, a_r.x), step(0.995 - 0.012 * a_n.z, a_r.x), fw) * (1.0 - uThread);
   float depth = 0.3 + 0.7 * smoothstep(-1.4, 0.9, p.z);
   float tw = 0.78 + 0.22 * sin(uTime * 2.1 + a_r.x * 41.0);
   float sceneDim = mix(dim(a), dim(b), fi);
 
-  gl_PointSize = uPx * (0.85 + 2.4 * pow(a_r.y, 5.0) + ember * 1.4 + near * 1.6) * (3.4 / clip.w);
-  vA = depth * tw * sceneDim * (uThread > 0.5 ? 0.15 : 0.95 + 0.6 * near + ember * 0.6);
+  // Visage : l'ombrage de la statue fixe la luminosité de chaque point ; une
+  // lumière qui suit le curseur module le relief ; un balayage lent parcourt
+  // la sculpture de haut en bas.
+  float lum = a_f.w;
+  vec3 nrm = normalize(vec3(a_n.xy, 1.0));
+  vec3 L = normalize(vec3(0.3 + uMouse.x * 0.9 * uMouseOn, 0.35 + uMouse.y * 0.7 * uMouseOn, 1.0));
+  float diff = max(dot(nrm, L), 0.0);
+  float yb = 1.25 - mod(uTime * 0.11, 3.8);
+  float scan = exp(-pow((a_f.y - yb) * 6.0, 2.0)) * 0.55 * uMotion;
+  float faceA = (0.1 + 2.1 * pow(lum, 1.7)) * (0.58 + 0.62 * diff) + scan * (0.3 + lum);
+  // Filaments du visage : des traînées lumineuses qui glissent le long des orbites.
+  float trail = 0.25 + 0.75 * smoothstep(0.55, 1.0, fract(a_r.y - uTime * 0.04 + a_r.x * 3.0));
+
+  float basePx = 0.85 + 2.4 * pow(a_r.y, 5.0) + ember * 1.4 + near * 1.6;
+  float facePx = 1.75 + 0.9 * pow(a_r.y, 6.0) + ember * 0.6 + near * 1.0;
+  gl_PointSize = uPx * mix(basePx, facePx, fw) * (3.4 / clip.w);
+  float baseA = uThread > 0.5 ? 0.15 : 0.95 + 0.6 * near + ember * 0.6;
+  float fA = uThread > 0.5 ? 0.3 * trail : 0.42 * faceA + 0.3 * near + ember * 0.9;
+  vA = depth * tw * sceneDim * mix(baseA, fA, fw);
 
   vec3 glauk = vec3(0.56, 0.94, 0.86);
   vec3 lin   = vec3(0.91, 0.89, 0.85);
   vec3 braise= vec3(1.0, 0.48, 0.27);
-  vC = mix(mix(glauk, lin, a_r.z * a_r.z * 0.7), braise, ember);
+  vec3 baseC = mix(glauk, lin, a_r.z * a_r.z * 0.7);
+  vec3 faceC = mix(glauk, lin, clamp(lum * 0.8 + scan * 0.4, 0.0, 1.0));
+  vC = mix(mix(baseC, faceC, fw), braise, ember);
 }
 `;
 
